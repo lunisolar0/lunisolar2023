@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <windows.h>
 #include <time.h>
 using namespace std;
@@ -11,16 +11,32 @@ typedef struct List
 	int length = 0; //排序表长度
 }List;
 
-//顺序表随机初始化
+//顺序表初始化
 void List_Init(List& L)
 {
 	L.length = 48;
 	for (int i = 0; i < L.length; i++)
+	{ //顺序赋值
+		L.a[i] = i + 1;
+	}
+	/*for (int i = 0; i < L.length; i++)
+	{ //逆序赋值
+		L.a[i] = 48 - i;
+	}*/
+	/*for (int i = 0; i < L.length; i++)
+	{ //阶梯型赋值
 		L.a[i] = ((i + 1) / 10 + 1) * 10;
-	/*for (int i = L.length - 1; i; i--)
-	{
-		int j = rand() % i;
+	}*/
+	for (int i = L.length - 1; i; i--)
+	{ //随机排序
+		int j = rand() % (i + 1);
 		swap(L.a[i], L.a[j]);
+	}
+	/*for (int i = rand() % 3 + 3; i; i--)
+	{ //少量乱序
+		int a1 = rand() % 48;
+		int a2 = rand() % 48;
+		swap(L.a[a1], L.a[a2]);
 	}*/
 }
 
