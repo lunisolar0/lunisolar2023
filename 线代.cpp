@@ -1,82 +1,88 @@
 #include <iostream>
+#include <iomanip>
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
-class Det //行列式类
-{
+class Det
+{ //行列式类
 private:
-	int matrix[10][10] = {}; //存储行列式
+	int a[10][10] = {}; //存储行列式
 	int step = 0; //行列式阶数
 	int valua = 0; //行列式的值
 
-//行列式输入
-public:void DetInput(Det& det)
+//行列式初始化
+public:void DetInit()
 {
 	cout << "请输入行列式阶数：";
-	cin >> det.step;
+	cin >> step;
 	cout << "请输入行列式：" << endl;
-	for (int i = 0; i < det.step; i++)
-	{
-		for (int j = 0; j < det.step; j++)
-			cin >> det.matrix[i][j];
-	}
-	det.valua = DetCalculate(det);
+	for (int i = 0; i < step; i++)
+		for (int j = 0; j < step; j++)
+			cin >> a[i][j];
+	valua = DetCalculate();
 }
 
 //行列式输出
-public:void DetOutput(Det det)
+public:void DetPrint()
 {
 	cout << "行列式输出如下：" << endl;
-	for (int i = 0; i < det.step; i++)
+	for (int i = 0; i < step; i++)
 	{
-		for (int j = 0; j < det.step; j++)
-			cout << det.matrix[i][j] << " ";
-		cout << endl;
+		cout << "|";
+		for (int j = 0; j < step; j++)
+		{
+			if(!j) cout << std::setw(2) << a[i][j];
+			else cout <<std::setw(3)<< a[i][j];
+		}
+		cout << "|" << endl;
 	}
-	cout << "该行列式的值为：" << det.valua << endl;
+	cout << "该行列式的值为：" << valua << endl;
 }
 
-//求行列式余子式
-public:Det MinorDet(int x, int y, Det det)
+//行列式求值
+private:int DetCalculate()
 {
-	Det Mdet;
-	Mdet.step = det.step - 1;
+	if (step == 1) return a[0][0]; //结束递归
+	int sum = 0;
+	for (int i = 0; i < step; i++)
+	{ //按第一列展开
+		if (i % 2 == 0) sum = sum + a[i][0] * MinorDet(i, 0).valua;
+		else sum = sum - a[i][0] * MinorDet(i, 0).valua;
+	}
+	return sum;
+}
+
+//求余子式
+public:Det MinorDet(int x, int y)
+{
+	Det Md;
+	Md.step = this->step - 1; //余子式阶数
 	int Mi = 0, Mj = 0;
-	for (int i = 0; i < det.step; i++)
-	{
-		for (int j = 0; j < det.step; j++)
+	for (int i = 0; i < this->step; i++)
+	{ //余子式各位置元素
+		for (int j = 0; j < this->step; j++)
 		{
 			if (i != x && j != y)
 			{
-				Mdet.matrix[Mi][Mj] = det.matrix[i][j];
-				if (Mj == Mdet.step - 1) Mj = 0, Mi++;
+				Md.a[Mi][Mj] = this->a[i][j];
+				if (Mj == Md.step - 1) Mj = 0, Mi++;
 				else Mj++;
 			}
 		}
 	}
-	return Mdet;
-}
-
-//行列式求值
-private:int DetCalculate(Det det)
-{
-	if (det.step == 1) return det.matrix[0][0];
-	int sum = 0;
-	for (int i = 0; i < det.step; i++)
-	{
-		if (i % 2 == 0) sum = sum + det.matrix[i][0] * DetCalculate(MinorDet(i, 0, det));
-		else sum = sum - det.matrix[i][0] * DetCalculate(MinorDet(i, 0, det));
-	}
-	return sum;
+	Md.valua = Md.DetCalculate(); //余子式的值
+	return Md;
 }
 
 };
 
 int main()
 {
-	Det* det = new Det; //创建对象
-	det->Det::DetInput(*det); //录入行列式
-	det->Det::DetOutput(*det); //输出行列式及其值
-	delete det;
+	Det* d = new Det;
+	d->DetInit();
+	d->DetPrint();
+	delete d;
 	return 0;
 }
