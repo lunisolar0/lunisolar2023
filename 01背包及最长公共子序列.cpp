@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <comdef.h>
 
 using namespace std;
 
